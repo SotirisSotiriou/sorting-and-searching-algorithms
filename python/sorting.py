@@ -1,3 +1,5 @@
+from random import randint
+
 
 #set order asc or desc
 
@@ -98,4 +100,117 @@ def bubbleSort(array, order='asc'):
         print("Wrong order type!")
     
     return array
+
+
+def __merge(left, right, order='asc'):
+    # If the first array is empty, then nothing needs
+    # to be merged, and you can return the second array as the result
+    if len(left) == 0:
+        return right
+
+    # If the second array is empty, then nothing needs
+    # to be merged, and you can return the first array as the result
+    if len(right) == 0:
+        return left
+
+    result = []
+    index_left = index_right = 0
+
+    # Now go through both arrays until all the elements
+    # make it into the resultant array
+    while len(result) < len(left) + len(right):
+        # The elements need to be sorted to add them to the
+        # resultant array, so you need to decide whether to get
+        # the next element from the first or the second array
+
+        #for ascending order
+        if order == 'asc':
+            if left[index_left] <= right[index_right]:
+                result.append(left[index_left])
+                index_left += 1
+            else:
+                result.append(right[index_right])
+                index_right += 1
+
+        #for descending order
+        elif order == 'desc':
+            if left[index_left] >= right[index_right]:
+                result.append(left[index_left])
+                index_left += 1
+            else:
+                result.append(right[index_right])
+                index_right += 1
+
+        # If you reach the end of either array, then you can
+        # add the remaining elements from the other array to
+        # the result and break the loop
+        if index_right == len(right):
+            result += left[index_left:]
+            break
+
+        if index_left == len(left):
+            result += right[index_right:]
+            break
+
+    return result
+
+
+def mergeSort(array, order='asc'):
+    if not (order == 'asc' or order == 'desc'):
+        print("Not right type of order, please select 'asc' or 'desc'")
+        return array
+
+    # If the input array contains fewer than two elements,
+    # then return it as the result of the function
+    if len(array) < 2:
+        return array
+
+    midpoint = len(array) // 2
+
+    # Sort the array by recursively splitting the input
+    # into two equal halves, sorting each half and merging them
+    # together into the final result
+    return __merge(left=mergeSort(array[:midpoint], order=order), right=mergeSort(array[midpoint:], order=order), order=order)
+
+
+
+def quickSort(array, order='asc'):
+    # If the input array contains fewer than two elements,
+    # then return it as the result of the function
+    if not (order == 'asc' or order == 'desc'):
+        print("Not right type of order, please select 'asc' or 'desc'")
+        return array
+
+    if len(array) < 2:
+        return array
+
+    low, same, high = [], [], []
+
+    # Select your `pivot` element randomly
+    pivot = array[randint(0, len(array) - 1)]
+
+    for item in array:
+        # Elements that are smaller than the `pivot` go to
+        # the `low` list. Elements that are larger than
+        # `pivot` go to the `high` list. Elements that are
+        # equal to `pivot` go to the `same` list.
+        if item < pivot:
+            low.append(item)
+        elif item == pivot:
+            same.append(item)
+        elif item > pivot:
+            high.append(item)
+
+    # The final result combines the sorted `low` list
+    # with the `same` list and the sorted `high` list
+    
+    #for ascending order
+    if order == 'asc':
+        return quickSort(low, order) + same + quickSort(high, order)
+
+    #for descending order
+    elif order == 'desc':
+        return quickSort(high, order) + same + quickSort(low, order)
+
+
 
